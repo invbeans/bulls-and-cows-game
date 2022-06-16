@@ -1,0 +1,14 @@
+html {
+  background-color: #f4d8ae;
+  background-size: cover;
+
+}
+
+body,
+html {
+  margin: 0 auto;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  align-items: baseline;
+}

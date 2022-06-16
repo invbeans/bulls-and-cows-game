@@ -1,0 +1,105 @@
+<p>Войдите или зарегистрируйтесь:</p>
+<div class="form-div">
+  <div class="form-group">
+    <label>Ник</label>
+    <input class="form-control" name="nickname" [(ngModel)]="player.nickname" required pattern="^[a-zA-Zа-яА-Я0-9]+"
+      #nickname="ngModel" />
+  </div>
+  <div class="form-group">
+    <label>Пароль</label>
+    <input class="form-control" name="password" [(ngModel)]="player.password" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$"
+    #password="ngModel" />
+  </div>
+  <div class="form-group">
+    <button (click)="authorize()" [disabled]="nickname.invalid || nickname.untouched || password.invalid || password.untouched">Авторизоваться</button>
+  </div>
+</div>
+
+<div class="alert" [hidden]="password.valid || password.untouched">
+  Пароль должен содержать хотя бы 8 символов, символы кириллицы, хотя бы 1 число, хотя бы один символ в верхнем
+  регистре
+</div>
+<div class="alert" *ngIf="wrongPassword">
+  Неверный пароль
+</div>
+
+<div class="form-div">
+  <div class="form-group">
+    <label>Ограничить по времени</label>
+    <select [(ngModel)]="amountTime">
+      <option *ngFor="let t of timeLimits" [ngValue]="t">
+        {{t}}
+      </option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Ограничить количество попыток</label>
+    <select [(ngModel)]="amountAttempts">
+      <option *ngFor="let a of attemptLimits" [ngValue]="a">
+        {{a}}
+      </option>
+    </select>
+  </div>
+  <div class="form-group" *ngIf="logged">
+    <button (click)="start()">Начать игру</button>
+  </div>
+</div>
+
+<div class="left-limits">
+  <label *ngIf="limitTime">Времени осталось: {{amountTime}}</label>
+  <label *ngIf="limitAttempts">Попыток осталось: {{amountAttempts}}</label>
+</div>
+
+<div class="list-attempts" *ngIf="attemptArr.length > 0">
+  <label>Ваши шаги:</label>
+  <table>
+    <thead>
+      <tr>
+        <td>Шаг</td>
+        <td>Ваше число</td>
+        <td>Быков</td>
+        <td>Коров</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let attempt of attemptArr; let i = index">
+        <td>{{i + 1}}</td>
+        <td>{{attempt.guess}}</td>
+        <td>{{attempt.bulls}}</td>
+        <td>{{attempt.cows}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="form-div" *ngIf="showInput">
+  <div class="form-group">
+    <label>Число</label>
+    <input class="form-control" name="guess" [(ngModel)]="guess"
+    required pattern="[0-9]{4}" #guessField="ngModel" />
+  </div>
+  <div class="form-group">
+    <button (click)="check()" [disabled]="guessField.invalid || guessField.untouched || (amountAttempts == 0 && limitAttempts) || (amountTime == 0 && limitTime)">Ввести</button>
+  </div>
+</div>
+
+<div class="list-games" *ngIf="gameArr.length > 0">
+  <label>Статистика игр:</label>
+  <table>
+    <thead>
+      <tr>
+        <td>Номер игры</td>
+        <td>Количество шагов</td>
+        <td>Время</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let game of gameArr; let i = index">
+        <td>{{i + 1}}</td>
+        <td>{{game.attempts}}</td>
+        <td>{{game.time}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
